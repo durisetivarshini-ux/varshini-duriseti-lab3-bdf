@@ -1,0 +1,85 @@
+{
+  "info": {
+    "_postman_id": "d4f5c2c8-f9b2-45a1-9d6c-58870d944eab",
+    "name": "Lab 3 Books API",
+    "description": "Success, validation, filtering, and not-found cases for the Lab 3 REST API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET all books",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('returns 200', function () { pm.response.to.have.status(200); });", "pm.test('has a data array', function () { pm.expect(pm.response.json().data).to.be.an('array'); });"] } }]
+    },
+    {
+      "name": "GET one book by ID",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books/1" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('returns the requested book', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().data.id).to.eql(1); });"] } }]
+    },
+    {
+      "name": "Search books by title",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books?search_q=The" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('returns matching books', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().data.length).to.be.above(0); });"] } }]
+    },
+    {
+      "name": "Sort books by price descending",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books?order_by=price&order=DESC" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('returns books sorted by price', function () { var data = pm.response.json().data; pm.response.to.have.status(200); pm.expect(data[0].price).to.be.at.least(data[data.length - 1].price); });"] } }]
+    },
+    {
+      "name": "Limit and offset",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books?limit=2&offset=1" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('returns requested page size', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().data.length).to.be.at.most(2); });"] } }]
+    },
+    {
+      "name": "Filter books by price range",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books?min_price=250&max_price=400" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('all prices are inside the range', function () { pm.response.to.have.status(200); pm.response.json().data.forEach(function (book) { pm.expect(book.price).to.be.within(250, 400); }); });"] } }]
+    },
+    {
+      "name": "Combine search, filter, sort, and pagination",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/books?search_q=The&min_price=200&max_price=450&order_by=price&order=ASC&limit=2&offset=0" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('combined query works', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().data.length).to.be.at.most(2); });"] } }]
+    },
+    {
+      "name": "POST valid book",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"title\":\"Postman Test Book\",\"author\":\"Lab 3 Student\",\"price\":199,\"pages\":150}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/books" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('book is created', function () { pm.response.to.have.status(201); var body = pm.response.json(); pm.expect(body.data.id).to.be.a('number'); pm.environment.set('bookId', body.data.id); });"] } }]
+    },
+    {
+      "name": "POST missing title",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"author\":\"Lab 3 Student\",\"price\":199}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/books" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing title is rejected', function () { pm.response.to.have.status(400); pm.expect(pm.response.json().message).to.be.a('string'); });"] } }]
+    },
+    {
+      "name": "POST missing author",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"title\":\"Postman Test Book\",\"price\":199}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/books" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing author is rejected', function () { pm.response.to.have.status(400); pm.expect(pm.response.json().message).to.be.a('string'); });"] } }]
+    },
+    {
+      "name": "POST non-numeric price",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"title\":\"Postman Test Book\",\"author\":\"Lab 3 Student\",\"price\":\"not-a-number\"}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/books" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('non-numeric price is rejected', function () { pm.response.to.have.status(400); pm.expect(pm.response.json().message).to.be.a('string'); });"] } }]
+    },
+    {
+      "name": "PUT existing book",
+      "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"title\":\"Updated Postman Test Book\",\"author\":\"Lab 3 Student\",\"price\":210,\"pages\":160}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/books/{{bookId}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('book is updated', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().message).to.eql('Book updated successfully'); });"] } }]
+    },
+    {
+      "name": "PUT non-existing book",
+      "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"title\":\"Missing Book\",\"author\":\"Lab 3 Student\",\"price\":210}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/books/999999" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing book returns 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.json().message).to.eql('Book not found'); });"] } }]
+    },
+    {
+      "name": "DELETE existing book",
+      "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/books/{{bookId}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('book is deleted', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().message).to.eql('Book deleted successfully'); });"] } }]
+    },
+    {
+      "name": "DELETE non-existing book",
+      "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/books/999999" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('missing book returns 404', function () { pm.response.to.have.status(404); pm.expect(pm.response.json().message).to.eql('Book not found'); });"] } }]
+    }
+  ]
+}
