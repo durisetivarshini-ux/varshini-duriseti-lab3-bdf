@@ -1,6 +1,6 @@
 # Lab 3: REST API, Query Parameters, Validation and Debugging
 
-**Deployment:** Not completed yet.
+**Vercel deployment:** [varshini-duriseti-labreport3-bdf.vercel.app](https://varshini-duriseti-labreport3-bdf.vercel.app/)
 
 **Subject:** Backend Development Fundamentals · Year II Term II · Aurora
 
@@ -45,6 +45,7 @@ The code uses straightforward route handlers, `if` checks, arrays, and SQL param
 ```text
 lab-03/
 ├── app.js
+├── index.js
 ├── books.db
 ├── package.json
 ├── package-lock.json
@@ -64,7 +65,8 @@ lab-03/
 │   ├── postman-post-success.png
 │   └── postman-post-validation-error.png
 └── test/
-    └── api.test.js
+    ├── api.test.js
+    └── vercel.test.js
 ```
 
 `books.db` is a separate Lab 3 database. The Lab 2 project and its database were not modified.
@@ -87,6 +89,10 @@ npm start
 ```
 
 The server listens at `http://localhost:3000` by default. To use another port, set the `PORT` environment variable before starting the server. If the port is occupied, stop the other process or select another port.
+
+## Vercel deployment
+
+Vercel uses `index.js` as the Express application entry point. It opens an in-memory SQLite database and loads the 10 sample books from `seed.sql`, because Vercel function files are read-only and the local `books.db` cannot be used for writes there. This makes the API routes available online, but changes made with POST, PUT, or DELETE are temporary and can reset when Vercel starts a new function instance. The local `npm start` setup continues to use `books.db` and keeps its changes.
 
 ## API endpoints
 

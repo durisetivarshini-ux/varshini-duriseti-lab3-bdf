@@ -13,14 +13,20 @@ const sortColumns = {
   pages: "pages",
 };
 
-async function openDatabase() {
+async function openDatabase(filename = databasePath, addSampleBooks = false) {
   const database = await sqlite.open({
-    filename: databasePath,
+    filename,
     driver: sqlite3.Database,
   });
 
   const schema = await fs.readFile(path.join(__dirname, "schema.sql"), "utf8");
   await database.exec(schema);
+
+  if (addSampleBooks) {
+    const sampleBooks = await fs.readFile(path.join(__dirname, "seed.sql"), "utf8");
+    await database.exec(sampleBooks);
+  }
+
   return database;
 }
 
