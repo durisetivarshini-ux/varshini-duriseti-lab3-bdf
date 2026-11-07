@@ -15,6 +15,13 @@
   "dependencies": {
     "express": "^4.21.2",
     "sqlite": "^5.1.1",
-    "sqlite3": "6.0.1"
+    "sqlite3": "5.1.7"
+  },
+  "overrides": {
+    "@tootallnate/once": "^2.0.1",
+    "glob": "^14.0.4",
+    "minimatch": "^11.0.5",
+    "node-gyp": "^11.5.0",
+    "tar": "^7.5.22"
   }
 }
