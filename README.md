@@ -45,7 +45,7 @@ The code uses straightforward route handlers, `if` checks, arrays, and SQL param
 ```text
 lab-03/
 ├── app.js
-├── index.js
+├── api.js
 ├── books.db
 ├── package.json
 ├── package-lock.json
@@ -88,11 +88,11 @@ npm run db:seed
 npm start
 ```
 
-The server listens at `http://localhost:3000` by default. To use another port, set the `PORT` environment variable before starting the server. If the port is occupied, stop the other process or select another port.
+The local server listens at `http://localhost:3000` by default. To use another port, set the `PORT` environment variable before starting the server. If the port is occupied, stop the other process or select another port.
 
 ## Vercel deployment
 
-Vercel uses `index.js` as the Express application entry point. It opens an in-memory SQLite database and loads the 10 sample books from `seed.sql`, because Vercel function files are read-only and the local `books.db` cannot be used for writes there. This makes the API routes available online, but changes made with POST, PUT, or DELETE are temporary and can reset when Vercel starts a new function instance. The local `npm start` setup continues to use `books.db` and keeps its changes.
+Vercel uses `app.js` as the Express application entry point. It opens an in-memory SQLite database and loads the 10 sample books from `seed.sql`, because Vercel function files are read-only and the local `books.db` cannot be used for writes there. This makes the API routes available online, but changes made with POST, PUT, or DELETE are temporary and can reset when Vercel starts a new function instance. The local `npm start` script runs `api.js` and continues to use `books.db` and keep its changes.
 
 ## API endpoints
 

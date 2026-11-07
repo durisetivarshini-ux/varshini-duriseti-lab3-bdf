@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 const { after, test } = require("node:test");
-const app = require("../index");
+const app = require("../app");
 
 let server;
 

@@ -2,7 +2,7 @@ const assert = require("node:assert/strict");
 const { after, before, test } = require("node:test");
 const sqlite = require("sqlite");
 const sqlite3 = require("sqlite3");
-const { createApp } = require("../app");
+const { createApp } = require("../api");
 
 let database;
 let server;

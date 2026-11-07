@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "Lab 3 REST API with query parameters, validation, and SQLite",
-  "main": "index.js",
+  "main": "app.js",
   "engines": {
     "node": ">=20.17.0"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node api.js",
     "db:seed": "node seed.js",
     "test": "node --test"
   },
